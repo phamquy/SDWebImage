@@ -375,7 +375,8 @@
     cell.textLabel.text = [NSString stringWithFormat:@"Image #%d", indexPath.row];
     cell.imageView.contentMode = UIViewContentModeScaleAspectFill;
     [cell.imageView setImageWithURL:[NSURL URLWithString:[_objects objectAtIndex:indexPath.row]]
-                   placeholderImage:[UIImage imageNamed:@"placeholder"] options:indexPath.row == 0 ? SDWebImageRefreshCached : 0];
+                   placeholderImage:[UIImage imageNamed:@"placeholder"]
+                            options:indexPath.row == 0 ? SDWebImageRefreshCached : 0];
     return cell;
 }
 
