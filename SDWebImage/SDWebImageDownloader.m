@@ -104,6 +104,11 @@ static NSString *const kCompletedCallbackKey = @"completed";
     _downloadQueue.maxConcurrentOperationCount = maxConcurrentDownloads;
 }
 
+- (NSUInteger)currentDownloadCount
+{
+    return _downloadQueue.operationCount;
+}
+
 - (NSInteger)maxConcurrentDownloads
 {
     return _downloadQueue.maxConcurrentOperationCount;
@@ -118,9 +123,16 @@ static NSString *const kCompletedCallbackKey = @"completed";
     {
         // In order to prevent from potential duplicate caching (NSURLCache + SDImageCache) we disable the cache for image requests if told otherwise
         NSMutableURLRequest *request = [NSMutableURLRequest.alloc initWithURL:url cachePolicy:(options & SDWebImageDownloaderUseNSURLCache ? NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData) timeoutInterval:15];
-        request.HTTPShouldHandleCookies = NO;
+        request.HTTPShouldHandleCookies = (options & SDWebImageDownloaderHandleCookies);
         request.HTTPShouldUsePipelining = YES;
-        request.allHTTPHeaderFields = wself.HTTPHeaders;
+        if (wself.headersFilter)
+        {
+            request.allHTTPHeaderFields = wself.headersFilter(url, [wself.HTTPHeaders copy]);
+        }
+        else
+        {
+            request.allHTTPHeaderFields = wself.HTTPHeaders;
+        }
         operation = [SDWebImageDownloaderOperation.alloc initWithRequest:request options:options progress:^(NSUInteger receivedSize, long long expectedSize)
         {
             if (!wself) return;
@@ -151,7 +163,6 @@ static NSString *const kCompletedCallbackKey = @"completed";
         {
             if (!wself) return;
             SDWebImageDownloader *sself = wself;
-            [sself callbacksForURL:url];
             [sself removeCallbacksForURL:url];
         }];
         [wself.downloadQueue addOperation:operation];
@@ -209,7 +220,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
     {
         callbacksForURL = self.URLCallbacks[url];
     });
-    return callbacksForURL;
+    return [callbacksForURL copy];
 }
 
 - (void)removeCallbacksForURL:(NSURL *)url

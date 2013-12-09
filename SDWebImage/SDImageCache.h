@@ -33,6 +33,11 @@ typedef enum SDImageCacheType SDImageCacheType;
 @interface SDImageCache : NSObject
 
 /**
+ * The maximum "total cost" of the in-memory image cache. The cost function is the number of pixels held in memory.
+ */
+@property (assign, nonatomic) NSUInteger maxMemoryCost;
+
+/**
  * The maximum length of time to keep an image in the cache, in seconds
  */
 @property (assign, nonatomic) NSInteger maxCacheAge;
@@ -98,7 +103,7 @@ typedef enum SDImageCacheType SDImageCacheType;
  *
  * @param key The unique key used to store the wanted image
  */
-- (void)queryDiskCacheForKey:(NSString *)key done:(void (^)(UIImage *image, SDImageCacheType cacheType))doneBlock;
+- (NSOperation *)queryDiskCacheForKey:(NSString *)key done:(void (^)(UIImage *image, SDImageCacheType cacheType))doneBlock;
 
 /**
  * Query the memory cache synchronously.
@@ -158,5 +163,10 @@ typedef enum SDImageCacheType SDImageCacheType;
  * Asynchronously calculate the disk cache's size.
  */
 - (void)calculateSizeWithCompletionBlock:(void (^)(NSUInteger fileCount, unsigned long long totalSize))completionBlock;
+
+/**
+ * Check if image exists in cache already
+ */
+- (BOOL)diskImageExistsWithKey:(NSString *)key;
 
 @end

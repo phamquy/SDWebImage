@@ -25,7 +25,7 @@ minimum deployement version. If you need iOS < 5.0 support, please use the last 
 Who Use It
 ----------
 
-Find out [who use SDWebImage](https://github.com/rs/SDWebImage/wiki/Who-Use-SDWebImage) and add your app to the list.
+Find out [who uses SDWebImage](https://github.com/rs/SDWebImage/wiki/Who-Uses-SDWebImage) and add your app to the list.
 
 How To Use
 ----------
@@ -94,7 +94,7 @@ SDWebImageManager *manager = [SDWebImageManager sharedManager];
                  {
                      // progression tracking code
                  }
-                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType)
+                 completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished)
                  {
                      if (image)
                      {
@@ -114,7 +114,7 @@ It's also possible to use the async image downloader independently:
                                                    {
                                                        // progression tracking code
                                                    }
-                                                   completed:^(UIImage *image, NSError *error, BOOL finished)
+                                                   completed:^(UIImage *image, NSData *data, NSError *error, BOOL finished)
                                                    {
                                                        if (image && finished)
                                                        {
@@ -217,7 +217,7 @@ There are two ways to use this in your project: copy all the files into your pro
 
 ### Add the SDWebImage project to your project
 
-- Download and unzip the last version of the framework from the [download page](https://github.com/rs/SDWebImage/wiki/Download-Compiled-Framework)
+- Download and unzip the last version of the framework from the [download page](https://github.com/rs/SDWebImage/releases)
 - Right-click on the project navigator and select "Add Files to "Your Project":
 - In the dialog, select SDWebImage.framework:
 - Check the "Copy items into destination group's folder (if needed)" checkbox
