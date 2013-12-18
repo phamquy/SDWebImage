@@ -61,8 +61,20 @@ static char operationArrayKey;
                 if (!wself) return;
                 if (image)
                 {
-                    wself.image = image;
-                    [wself setNeedsLayout];
+                    if (cacheType == SDImageCacheTypeNone) {
+                        [UIView transitionWithView:wself
+                                          duration:.5f
+                                           options:UIViewAnimationOptionTransitionCrossDissolve
+                                        animations:^{
+                                            wself.image = image;
+                                        } completion:^(BOOL finished) {
+                                            [wself setNeedsLayout];
+                                        }];
+                    }else{
+                        wself.image = image;
+                        [wself setNeedsLayout];
+                    }
+                    
                 }
                 if (completedBlock && finished)
                 {
