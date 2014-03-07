@@ -49,7 +49,7 @@ static char operationArrayKey;
             if (!wself) return;
             dispatch_main_sync_safe(^{
                 if (!wself) return;
-                if (image) {
+                if (image)
                 {
                     if (cacheType == SDImageCacheTypeNone) {
                         [UIView transitionWithView:wself
@@ -66,10 +66,12 @@ static char operationArrayKey;
                     }
                     
                 }
-                if (completedBlock && finished) {
+                if (completedBlock && finished)
+                {
                     completedBlock(image, error, cacheType);
                 }
             });
+            
         }];
         objc_setAssociatedObject(self, &operationKey, operation, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
