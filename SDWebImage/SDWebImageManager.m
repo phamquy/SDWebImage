@@ -110,7 +110,10 @@
             return;
         }
 
-        if ((!image || options & SDWebImageRefreshCached) && (![self.delegate respondsToSelector:@selector(imageManager:shouldDownloadImageForURL:)] || [self.delegate imageManager:self shouldDownloadImageForURL:url])) {
+        if ((!image || options & SDWebImageRefreshCached) &&
+            (![self.delegate respondsToSelector:@selector(imageManager:shouldDownloadImageForURL:)] ||
+             [self.delegate imageManager:self shouldDownloadImageForURL:url]))
+        {
             if (image && options & SDWebImageRefreshCached) {
                 dispatch_main_sync_safe(^{
                     // If image was found in the cache bug SDWebImageRefreshCached is provided, notify about the cached image
@@ -121,19 +124,40 @@
 
             // download if no image or requested to refresh anyway, and download allowed by delegate
             SDWebImageDownloaderOptions downloaderOptions = 0;
-            if (options & SDWebImageLowPriority) downloaderOptions |= SDWebImageDownloaderLowPriority;
-            if (options & SDWebImageProgressiveDownload) downloaderOptions |= SDWebImageDownloaderProgressiveDownload;
-            if (options & SDWebImageRefreshCached) downloaderOptions |= SDWebImageDownloaderUseNSURLCache;
-            if (options & SDWebImageContinueInBackground) downloaderOptions |= SDWebImageDownloaderContinueInBackground;
-            if (options & SDWebImageHandleCookies) downloaderOptions |= SDWebImageDownloaderHandleCookies;
-            if (options & SDWebImageAllowInvalidSSLCertificates) downloaderOptions |= SDWebImageDownloaderAllowInvalidSSLCertificates;
-            if (image && options & SDWebImageRefreshCached) {
+            
+            if (options & SDWebImageLowPriority)
+                downloaderOptions |= SDWebImageDownloaderLowPriority;
+            
+            if (options & SDWebImageProgressiveDownload)
+                downloaderOptions |= SDWebImageDownloaderProgressiveDownload;
+            
+            if (options & SDWebImageRefreshCached)
+                downloaderOptions |= SDWebImageDownloaderUseNSURLCache;
+            
+            if (options & SDWebImageContinueInBackground)
+                downloaderOptions |= SDWebImageDownloaderContinueInBackground;
+            
+            if (options & SDWebImageHandleCookies)
+                downloaderOptions |= SDWebImageDownloaderHandleCookies;
+            
+            if (options & SDWebImageAllowInvalidSSLCertificates)
+                downloaderOptions |= SDWebImageDownloaderAllowInvalidSSLCertificates;
+            
+            if (image && (options & SDWebImageRefreshCached))
+            {
                 // force progressive off if image already cached but forced refreshing
                 downloaderOptions &= ~SDWebImageDownloaderProgressiveDownload;
                 // ignore image read from NSURLCache if image if cached but force refreshing
                 downloaderOptions |= SDWebImageDownloaderIgnoreCachedResponse;
             }
-            id <SDWebImageOperation> subOperation = [self.imageDownloader downloadImageWithURL:url options:downloaderOptions progress:progressBlock completed:^(UIImage *downloadedImage, NSData *data, NSError *error, BOOL finished) {
+            
+            id <SDWebImageOperation> subOperation =
+            [self.imageDownloader
+             downloadImageWithURL:url
+             options:downloaderOptions
+             progress:progressBlock
+             completed:^(UIImage *downloadedImage, NSData *data, NSError *error, BOOL finished)
+            {
                 if (weakOperation.isCancelled) {
                     dispatch_main_sync_safe(^{
                         completedBlock(nil, nil, SDImageCacheTypeNone, finished);
@@ -157,7 +181,10 @@
                         // Image refresh hit the NSURLCache cache, do not call the completion block
                     }
                             // NOTE: We don't call transformDownloadedImage delegate method on animated images as most transformation code would mangle it
-                    else if (downloadedImage && !downloadedImage.images && [self.delegate respondsToSelector:@selector(imageManager:transformDownloadedImage:withURL:)]) {
+                    else if (downloadedImage &&
+                             !downloadedImage.images &&
+                             [self.delegate respondsToSelector:@selector(imageManager:transformDownloadedImage:withURL:)])
+                    {
                         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
                             UIImage *transformedImage = [self.delegate imageManager:self transformDownloadedImage:downloadedImage withURL:url];
 

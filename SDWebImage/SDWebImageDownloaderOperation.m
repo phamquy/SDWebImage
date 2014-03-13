@@ -100,7 +100,11 @@
 
         if (!self.isFinished) {
             [self.connection cancel];
-            [self connection:self.connection didFailWithError:[NSError errorWithDomain:NSURLErrorDomain code:NSURLErrorTimedOut userInfo:@{NSURLErrorFailingURLErrorKey : self.request.URL}]];
+            [self connection:self.connection
+             didFailWithError:[NSError
+                               errorWithDomain:NSURLErrorDomain
+                               code:NSURLErrorTimedOut
+                               userInfo:@{NSURLErrorFailingURLErrorKey : self.request.URL}]];
         }
     }
     else {
@@ -201,6 +205,10 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    
+    // TODO: [imagnet] the crash occur here, need to check if self.imageData is valid
+    // for respond to appendData
+    
     [self.imageData appendData:data];
 
     if ((self.options & SDWebImageDownloaderProgressiveDownload) && self.expectedSize > 0 && self.completedBlock) {
@@ -235,7 +243,11 @@
 
         }
 
+        
+        // TODO: [imagnet] NEED TO CHECK THIS FOLLOWING CODE
+        
         if (width + height > 0 && totalSize < self.expectedSize) {
+            
             // Create the image
             CGImageRef partialImageRef = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
 
