@@ -13,6 +13,9 @@
 @implementation UIImage (ForceDecode)
 
 + (UIImage *)decodedImageWithImage:(UIImage *)image {
+    // [imagnet] Jack, disable dcode image
+    return image;
+    
     if (image.images) {
         // Do not decode animated images
         return image;
