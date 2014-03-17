@@ -335,21 +335,28 @@
         }
         else {
 
-            UIImage *image = [UIImage sd_imageWithData:self.imageData];
-
-            image = [self scaledImageForKey:self.request.URL.absoluteString image:image];
-
-            if (!image.images) // Do not force decod animated GIFs
-            {
-                image = [UIImage decodedImageWithImage:image];
+            //[imagnet][Jack] check if data is received fully
+            if (self.imageData.length < self.expectedSize) {
+                NSLog(@"Broken image received");
+                completionBlock(nil, nil, [NSError errorWithDomain:@"SDWebImageErrorDomain" code:0 userInfo:@{NSLocalizedDescriptionKey : @"Downloaded broken image"}], YES);
+            }else{
+                UIImage *image = [UIImage sd_imageWithData:self.imageData];
+                
+                image = [self scaledImageForKey:self.request.URL.absoluteString image:image];
+                
+                if (!image.images) // Do not force decod animated GIFs
+                {
+                    image = [UIImage decodedImageWithImage:image];
+                }
+                
+                if (CGSizeEqualToSize(image.size, CGSizeZero)) {
+                    completionBlock(nil, nil, [NSError errorWithDomain:@"SDWebImageErrorDomain" code:0 userInfo:@{NSLocalizedDescriptionKey : @"Downloaded image has 0 pixels"}], YES);
+                }
+                else {
+                    completionBlock(image, self.imageData, nil, YES);
+                }
             }
-
-            if (CGSizeEqualToSize(image.size, CGSizeZero)) {
-                completionBlock(nil, nil, [NSError errorWithDomain:@"SDWebImageErrorDomain" code:0 userInfo:@{NSLocalizedDescriptionKey : @"Downloaded image has 0 pixels"}], YES);
-            }
-            else {
-                completionBlock(image, self.imageData, nil, YES);
-            }
+            
             self.completionBlock = nil;
             [self done];
         }

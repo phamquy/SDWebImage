@@ -69,7 +69,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
         _URLCallbacks = [NSMutableDictionary new];
         _HTTPHeaders = [NSMutableDictionary dictionaryWithObject:@"image/webp,image/*;q=0.8" forKey:@"Accept"];
         _barrierQueue = dispatch_queue_create("com.hackemist.SDWebImageDownloaderBarrierQueue", DISPATCH_QUEUE_CONCURRENT);
-        _downloadTimeout = 15.0;
+        _downloadTimeout = 120.0f;
     }
     return self;
 }
@@ -132,6 +132,10 @@ static NSString *const kCompletedCallbackKey = @"completed";
          
          request.HTTPShouldHandleCookies = (options & SDWebImageDownloaderHandleCookies);
          request.HTTPShouldUsePipelining = YES;
+         
+         // [Jack] test
+         // [request setValue:@"" forHTTPHeaderField:@"Accept-Encoding"];
+         
          if (wself.headersFilter) {
              request.allHTTPHeaderFields = wself.headersFilter(url, [wself.HTTPHeaders copy]);
          }
