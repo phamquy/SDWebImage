@@ -184,6 +184,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     if (![response respondsToSelector:@selector(statusCode)] || [((NSHTTPURLResponse *)response) statusCode] < 400) {
         NSInteger expected = response.expectedContentLength > 0 ? (NSInteger)response.expectedContentLength : 0;
+        imLog(@"Expected image file size: %@", @(expected));
         self.expectedSize = expected;
         if (self.progressBlock) {
             self.progressBlock(0, expected);
@@ -337,7 +338,7 @@
 
             //[imagnet][Jack] check if data is received fully
             if (self.imageData.length < self.expectedSize) {
-                NSLog(@"Broken image received");
+                imLog(@"Broken image received");
                 completionBlock(nil, nil, [NSError errorWithDomain:@"SDWebImageErrorDomain" code:0 userInfo:@{NSLocalizedDescriptionKey : @"Downloaded broken image"}], YES);
             }else{
                 UIImage *image = [UIImage sd_imageWithData:self.imageData];
