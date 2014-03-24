@@ -134,7 +134,7 @@ static NSString *const kCompletedCallbackKey = @"completed";
          request.HTTPShouldUsePipelining = YES;
          
          // [Jack] test
-         // [request setValue:@"" forHTTPHeaderField:@"Accept-Encoding"];
+         [request setValue:@"" forHTTPHeaderField:@"Accept-Encoding"];
          
          if (wself.headersFilter) {
              request.allHTTPHeaderFields = wself.headersFilter(url, [wself.HTTPHeaders copy]);
