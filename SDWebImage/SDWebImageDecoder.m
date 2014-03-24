@@ -14,7 +14,7 @@
 
 + (UIImage *)decodedImageWithImage:(UIImage *)image {
     // [imagnet] Jack, disable dcode image
-    return image;
+     return image;
     
     if (image.images) {
         // Do not decode animated images
